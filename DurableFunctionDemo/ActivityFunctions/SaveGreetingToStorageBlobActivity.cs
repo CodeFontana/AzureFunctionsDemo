@@ -10,7 +10,7 @@ public static class SaveGreetingToStorageBlobActivity
     public static void SaveGreetingToStorageBlob([ActivityTrigger] string blobName, FunctionContext executionContext)
     {
         ILogger log = executionContext.GetLogger(nameof(SaveGreetingToStorageBlob));
-        log.LogInformation($"Save greeting to storage blob: {blobName}");
+        log.LogInformation("Save greeting to storage blob: {blobName}", blobName);
         // Save blob logic
     }
 }

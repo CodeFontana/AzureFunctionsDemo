@@ -1,9 +1,11 @@
 using DurableFunctionDemo.ActivityFunctions;
+using DurableFunctionDemo.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace DurableFunctionDemo
 {
@@ -11,23 +13,25 @@ namespace DurableFunctionDemo
     {
         [Function(nameof(GreetingsOrchestrator))]
         public static async Task<List<string>> RunOrchestrator(
-            [OrchestrationTrigger] TaskOrchestrationContext context)
+            [OrchestrationTrigger] TaskOrchestrationContext context,
+            string[] names)
         {
             ILogger logger = context.CreateReplaySafeLogger(nameof(GreetingsOrchestrator));
             logger.LogInformation("Starting orchestrator.");
             List<string> outputs = new();
-            string[] names = new[] { "Judy", "Brian", "Piper", "Pepper" };
 
             foreach (string name in names)
             {
                 string greeting = await context.CallActivityAsync<string>(
                     nameof(GenerateGreetingActivity.GenerateGreeting), name);
 
-                string filePath = await context.CallActivityAsync<string>(
-                    nameof(SaveGreetingToFileActivity.SaveGreetingToFile), greeting);
+                GreetingModel greetingData = new(name, greeting);
+
+                string filename = await context.CallActivityAsync<string>(
+                    nameof(SaveGreetingToFileActivity.SaveGreetingToFile), greetingData);
 
                 await context.CallActivityAsync(
-                    nameof(SaveGreetingToStorageBlobActivity.SaveGreetingToStorageBlob), filePath);
+                    nameof(SaveGreetingToStorageBlobActivity.SaveGreetingToStorageBlob), filename);
 
                 outputs.Add(greeting);
             }
@@ -43,13 +47,18 @@ namespace DurableFunctionDemo
         {
             ILogger logger = executionContext.GetLogger("GreetingsOrchestrator_HttpStart");
 
-            // Function input comes from the request content.
+            // Deserialize the request content to get the array of names
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            string[]? names = JsonSerializer.Deserialize<string[]>(requestBody);
+
+            // Function input comes from the request content
+            // Pass the array of names as input to the orchestrator
             string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(
-                nameof(GreetingsOrchestrator));
+                nameof(GreetingsOrchestrator), names);
 
             logger.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
 
-            // Returns an HTTP 202 response with an instance management payload.
+            // Returns an HTTP 202 response with an instance management payload
             // See https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-http-api#start-orchestration
             return client.CreateCheckStatusResponse(req, instanceId);
         }

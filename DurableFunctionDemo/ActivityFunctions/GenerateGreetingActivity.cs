@@ -10,7 +10,7 @@ public static class GenerateGreetingActivity
     public static string GenerateGreeting([ActivityTrigger] string name, FunctionContext executionContext)
     {
         ILogger log = executionContext.GetLogger(nameof(GenerateGreeting));
-        log.LogInformation($"Generating greeting for {name}.");
+        log.LogInformation("Generating greeting for {name}", name);
         return $"Hello, {name}!";
     }
 }
