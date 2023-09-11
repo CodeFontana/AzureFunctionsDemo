@@ -1,0 +1,8 @@
+
+### Print Welcome message
+GET http://localhost:7081/api/Hello
+
+### Say Hello
+POST http://localhost:7081/api/Hello
+
+Brian
