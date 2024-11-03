@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Mime;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace HttpTriggerDemo
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", MediaTypeNames.Text.Plain);
             response.WriteString("Welcome to Azure Functions!");
             return response;
         }
@@ -29,7 +30,7 @@ namespace HttpTriggerDemo
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            response.Headers.Add("Content-Type", MediaTypeNames.Text.Plain);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
