@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -16,31 +17,31 @@ namespace HttpTriggerDemo
         }
 
         [Function("Welcome")]
-        public HttpResponseData GetWelcome([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Hello")] HttpRequestData req)
+        public IActionResult GetWelcome([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Hello")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", MediaTypeNames.Text.Plain);
-            response.WriteString("Welcome to Azure Functions!");
-            return response;
+            return new OkObjectResult($"Welcome to Azure Functions!");
         }
 
         [Function("Hello")]
-        public async Task<HttpResponseData> GenerateGreeting([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Hello")] HttpRequestData req)
+        public async Task<IActionResult> GenerateGreeting([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Hello")] HttpRequestData req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", MediaTypeNames.Text.Plain);
-
+            _logger.LogInformation("C# HTTP trigger function is processing a request.");
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             if (string.IsNullOrWhiteSpace(requestBody))
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestObjectResult("Request body cannot be empty.");
             }
 
-            response.WriteString($"Hello, {requestBody}!");
-            return response;
+            _logger.LogTrace("Hello trace, {name}", requestBody);
+            _logger.LogDebug("Happy debug, {name}", requestBody);
+            _logger.LogInformation("Hello, {name}", requestBody);
+            _logger.LogWarning("Core temperature rising, {name}", requestBody);
+            _logger.LogError("I'm afraid I can't do that, {name}", requestBody);
+            _logger.LogCritical("Meltdown imminent, {name}", requestBody);
+
+            return new OkObjectResult($"Hello, {requestBody}!");
         }
     }
 }
