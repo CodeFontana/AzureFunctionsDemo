@@ -10,7 +10,7 @@ public static class SaveGreetingToFileActivity
     public static async Task<string> SaveGreetingToFile([ActivityTrigger] GreetingModel greetingData, FunctionContext executionContext)
     {
         ILogger log = executionContext.GetLogger(nameof(SaveGreetingToFile));
-        string filename = $"geeting_{greetingData.Name}_{DateTime.UtcNow.Ticks}.txt";
+        string filename = $"greeting_{greetingData.Name}_{DateTime.UtcNow.Ticks}.txt";
         log.LogInformation("Saving greeting to a file: {filename}", filename);
         await File.WriteAllTextAsync(filename, greetingData.Name);
         return filename;
