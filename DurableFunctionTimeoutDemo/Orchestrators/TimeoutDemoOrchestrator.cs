@@ -9,6 +9,26 @@ namespace DurableFunctionTimeoutDemo.Orchestrators;
 
 internal static class TimeoutDemoOrchestrator
 {
+    [Function($"{nameof(TimeoutDemoOrchestrator)}_HttpStart")]
+    public static async Task<HttpResponseData> HttpStart(
+        [HttpTrigger(
+            AuthorizationLevel.Function,
+            "post",
+            Route = $"{nameof(TimeoutDemoOrchestrator)}_HttpStart/{{taskDelay:int}}")
+        ] HttpRequestData req,
+        int taskDelay,
+        [DurableClient] DurableTaskClient client,
+        FunctionContext executionContext)
+    {
+        ILogger logger = executionContext.GetLogger($"{nameof(TimeoutDemoOrchestrator)}_HttpStart");
+        string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(TimeoutDemoOrchestrator), taskDelay);
+        logger.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
+
+        HttpResponseData response = req.CreateResponse(System.Net.HttpStatusCode.Accepted);
+        await response.WriteStringAsync($"Started orchestration with ID: {instanceId}");
+        return response;
+    }
+
     [Function(nameof(TimeoutDemoOrchestrator))]
     public static async Task RunOrchestrator(
         [OrchestrationTrigger] TaskOrchestrationContext context)
@@ -30,25 +50,5 @@ internal static class TimeoutDemoOrchestrator
         }
 
         logger.LogInformation("TimeoutDemoOrchestrator completed at {EndTime}", context.CurrentUtcDateTime);
-    }
-
-    [Function($"{nameof(TimeoutDemoOrchestrator)}_HttpStart")]
-    public static async Task<HttpResponseData> HttpStart(
-        [HttpTrigger(
-            AuthorizationLevel.Function,
-            "post",
-            Route = $"{nameof(TimeoutDemoOrchestrator)}_HttpStart/{{taskDelay:int}}")
-        ] HttpRequestData req,
-        int taskDelay,
-        [DurableClient] DurableTaskClient client,
-        FunctionContext executionContext)
-    {
-        ILogger logger = executionContext.GetLogger($"{nameof(TimeoutDemoOrchestrator)}_HttpStart");
-        string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(TimeoutDemoOrchestrator), taskDelay);
-        logger.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
-
-        HttpResponseData response = req.CreateResponse(System.Net.HttpStatusCode.Accepted);
-        await response.WriteStringAsync($"Started orchestration with ID: {instanceId}");
-        return response;
     }
 }
