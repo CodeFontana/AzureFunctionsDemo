@@ -13,7 +13,4 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.5" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SubOrchestrators\" />
-  </ItemGroup>
 </Project>
