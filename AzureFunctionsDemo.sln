@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpTriggerDemo", "HttpTrig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableFunctionDemo", "DurableFunctionDemo\DurableFunctionDemo.csproj", "{5469D1F1-B9CB-40DE-A9A1-59FC3DC9D495}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableFunctionTimeoutDemo", "DurableFunctionTimeoutDemo\DurableFunctionTimeoutDemo.csproj", "{FEECD6B5-5BC9-4F83-8A1C-F520603586FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5469D1F1-B9CB-40DE-A9A1-59FC3DC9D495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5469D1F1-B9CB-40DE-A9A1-59FC3DC9D495}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5469D1F1-B9CB-40DE-A9A1-59FC3DC9D495}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEECD6B5-5BC9-4F83-8A1C-F520603586FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEECD6B5-5BC9-4F83-8A1C-F520603586FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEECD6B5-5BC9-4F83-8A1C-F520603586FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEECD6B5-5BC9-4F83-8A1C-F520603586FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
