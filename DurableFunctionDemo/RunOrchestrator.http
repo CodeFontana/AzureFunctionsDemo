@@ -1,5 +1,8 @@
+# Generate greeting for specified names
 POST http://localhost:7147/api/GreetingsOrchestrator_HttpStart
 
 [
-  "Brian"
+  "Brian",
+  "Pepper"
 ]
+###
