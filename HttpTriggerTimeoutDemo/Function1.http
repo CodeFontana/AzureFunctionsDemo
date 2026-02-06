@@ -1,0 +1,9 @@
+# Demonstrate azure function timeout
+GET http://localhost:7084/api/TimeoutDemoOne
+
+###
+
+# Demonstrate azure function timeout
+GET http://localhost:7084/api/TimeoutDemoTwo
+
+###
